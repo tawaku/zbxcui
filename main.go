@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DefaultLogFile = "./app.log"
+	DefaultLogFile = "logs/app.log"
 )
 
 func main() {

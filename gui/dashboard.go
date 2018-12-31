@@ -207,7 +207,10 @@ func (self *Dashboard) filter(g *gocui.Gui, v *gocui.View) error {
 	if v != nil {
 		// Get keyword to filter
 		if k, err := v.Line(bufferCursor(v)); err != nil {
-			return errors.Wrap(err, "Failed to get input string from navigation widget.")
+			// Remove filter
+			for _, e := range self.eventWidget.events {
+				self.eventWidget.properties[e.Eventid].filtered = false
+			}
 		} else {
 			for _, e := range self.eventWidget.events {
 				notFiltered :=
@@ -235,7 +238,8 @@ func (self *Dashboard) filter(g *gocui.Gui, v *gocui.View) error {
 func (self *Dashboard) outNav(g *gocui.Gui, v *gocui.View) error {
 	if v != nil {
 		// Switch to event widget
-		g.SetCurrentView(self.eventWidget.name)
+		vEvt, _ := g.SetCurrentView(self.eventWidget.name)
+		vEvt.SetCursor(0, 1)
 	}
 	return nil
 }
