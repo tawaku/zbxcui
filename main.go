@@ -26,7 +26,7 @@ func main() {
 	// Logger initialization
 	var logger *log.Logger
 	if logfile, err := os.OpenFile(DefaultLogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666); err != nil {
-		panic("cannnot open logfile: " + err.Error())
+		panic("Cannnot open logfile: " + err.Error())
 	} else {
 		defer logfile.Close()
 		logger = log.New(logfile, "[ZBXCUI]", log.LstdFlags|log.LUTC)

@@ -12,10 +12,6 @@ import (
 	"sync/atomic"
 )
 
-type ClientUtil interface {
-	request(send, recv interface{})
-}
-
 type Client struct {
 	// Members
 	URL        *url.URL
