@@ -12,7 +12,7 @@ import (
 
 const (
 	DefaultConfig  = "config.json"
-	DefaultLogFile = "logs/app.log"
+	DefaultLogFile = "log/app.log"
 	DefaultHost    = "127.0.0.1"
 	DefaultPort    = 80
 	DefaultUser    = "Admin"
