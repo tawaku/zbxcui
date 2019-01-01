@@ -76,11 +76,15 @@ func (self *Client) EventGet() ([]EventGetResult, error) {
 	send := self.makeRequest(
 		"event.get",
 		EventGet{
+			CommonGet: &CommonGet{
+				Sortorder: []string{"DESC"},
+			},
 			SelectHosts:         "extend",
 			SelectRelatedObject: "extend",
 			SelectAlerts:        "extend",
 			SelectAcknowledges:  "extend",
 			SelectTags:          "extend",
+			Sortfield:           []string{"clock"},
 		},
 	)
 	// Prepare struct to receive
