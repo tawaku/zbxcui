@@ -13,6 +13,10 @@ import (
 const (
 	DefaultConfig  = "config.json"
 	DefaultLogFile = "logs/app.log"
+	DefaultHost    = "127.0.0.1"
+	DefaultPort    = 80
+	DefaultUser    = "Admin"
+	DefaultPass    = "zabbix"
 )
 
 type Config struct {
@@ -23,32 +27,32 @@ type Config struct {
 }
 
 func main() {
-	// Get args
-	var host, user, pass string
-	var port uint
-	// Args from command line
-	flag.StringVar(&host, "host", "127.0.0.1", "IP address of Zabbix server.")
-	flag.UintVar(&port, "port", 80, "Port of Zabbix server.")
-	flag.StringVar(&user, "user", "Admin", "Username to login Zabbix GUI.")
-	flag.StringVar(&pass, "pass", "zabbix", "Password to login Zabbix GUI.")
-	flag.Parse()
-	// Args from json file
+	// Args constructor
 	config := new(Config)
+	// Args from json file
 	if f, err := os.Open(DefaultConfig); err == nil {
 		json.NewDecoder(f).Decode(&config)
 		f.Close()
-		if host == "127.0.0.1" && config.Host != "" {
-			host = config.Host
-		}
-		if port == 80 && config.Port != 0 {
-			port = config.Port
-		}
-		if user == "Admin" && config.User != "" {
-			user = config.User
-		}
-		if pass == "zabbix" && config.Pass != "" {
-			pass = config.Pass
-		}
+	}
+	// Args from command line
+	var host, user, pass string
+	var port uint
+	flag.StringVar(&host, "host", DefaultHost, "IP address of Zabbix server.")
+	flag.UintVar(&port, "port", DefaultPort, "Port of Zabbix server.")
+	flag.StringVar(&user, "user", DefaultUser, "Username to login Zabbix GUI.")
+	flag.StringVar(&pass, "pass", DefaultPass, "Password to login Zabbix GUI.")
+	flag.Parse()
+	if host != DefaultHost {
+		config.Host = host
+	}
+	if port != DefaultPort {
+		config.Port = port
+	}
+	if user != DefaultUser {
+		config.User = user
+	}
+	if pass != DefaultPass {
+		config.Pass = pass
 	}
 
 	// Logger initialization
@@ -62,8 +66,8 @@ func main() {
 
 	// Make client to get information from Zabbix
 	var d *gui.Dashboard
-	url := fmt.Sprintf("http://%s:%d/api_jsonrpc.php", host, port)
-	if c, err := api.MakeClient(url, user, pass, logger); err != nil {
+	url := fmt.Sprintf("http://%s:%d/api_jsonrpc.php", config.Host, config.Port)
+	if c, err := api.MakeClient(url, config.User, config.Pass, logger); err != nil {
 		panic("Failed to make client: " + err.Error())
 	} else {
 		defer c.Close()
