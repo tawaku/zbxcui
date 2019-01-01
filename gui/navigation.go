@@ -22,7 +22,6 @@ func (self *NavigationWidget) Layout(g *gocui.Gui) error {
 		}
 
 		// Set view parameter
-		v.Frame = false
 		v.Editable = true
 
 		// Initialize view

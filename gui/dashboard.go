@@ -10,11 +10,17 @@ import (
 	_time "time"
 )
 
+const (
+	NavigationHeight = 2
+	HelpHeight       = 2
+)
+
 type Dashboard struct {
 	gui              *gocui.Gui
 	client           *api.Client
 	eventWidget      *EventWidget
 	navigationWidget *NavigationWidget
+	helpWidget       *HelpWidget
 	done             chan struct{}
 	logger           *log.Logger
 }
@@ -61,12 +67,12 @@ func (self *Dashboard) Run() {
 	defer self.gui.Close()
 
 	// Set widget
-	const navHeight = 3
 	e, _ := self.eventGet()
 	maxX, maxY := self.gui.Size()
-	self.eventWidget = NewEventWidget("Event", 0, 0, maxX, maxY-navHeight, e)
-	self.navigationWidget = NewNavigationWidget("Navigation", 0, maxY-navHeight, maxX, maxY)
-	self.gui.SetManager(self.eventWidget, self.navigationWidget)
+	self.eventWidget = NewEventWidget("Event", 0, 0, maxX, maxY-NavigationHeight-HelpHeight, e)
+	self.navigationWidget = NewNavigationWidget("Navigation", 0, maxY-NavigationHeight-HelpHeight, maxX, maxY-HelpHeight)
+	self.helpWidget = NewHelpWidget("Help", 0, maxY-HelpHeight, maxX, maxY)
+	self.gui.SetManager(self.eventWidget, self.navigationWidget, self.helpWidget)
 
 	// Enable cursor
 	self.gui.Cursor = true
